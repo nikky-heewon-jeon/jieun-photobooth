@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>지은불사 에디션 · 프레임 시안</title>
+<style>
+  body{margin:0; background:#ecebe4; color:#111;
+    font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif; padding:32px}
+  h1{font-size:22px; letter-spacing:-.02em; margin:0 0 4px}
+  p.sub{color:#666; font-size:13px; margin:0 0 28px}
+  .row{display:flex; gap:36px; flex-wrap:wrap; justify-content:center}
+  .item{width:280px; text-align:center}
+  .item canvas{width:100%; box-shadow:0 6px 28px rgba(0,0,0,.14)}
+  .cap{margin-top:12px; font-weight:700; font-size:15px}
+  .desc{color:#666; font-size:12px; margin-top:4px; line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>지은불사 에디션 · 프레임 시안</h1>
+  <p class="sub">실제 앱에 적용된 두 프레임. 마스코트를 키워 마지막 컷을 살짝 침범, 문구 없이 날짜만.</p>
+  <div class="row" id="row"></div>
+<script>
+const PW=380, PH=253, PAD=22, GAP=12, SHOTS=4, DPR=2, FOOT=150;
+const color=new Image(); color.src='assets/jieun.png';
+const line=new Image();  line.src='assets/jieun_line.png';
+
+const VARIANTS=[
+  {key:'A', cap:'A · 지은불사 (컬러)', desc:'블랙 잔점 + 컬러 캐릭터.', bg:'#000', dot:'rgba(241,234,217,.10)', txt:'#f1ead9', art:()=>color},
+  {key:'D', cap:'D · 지은라인',        desc:'화이트 + 선화 캐릭터. 미니멀.', bg:'#fff', txt:'#222', art:()=>line},
+];
+
+function ls(s,n){ return s.split('').join(' '.repeat(n)); }
+function photo(x,X,Y,W,H,i){ const c=[['#b9c2d0','#8a93a6'],['#cdbfae','#9c8c76'],['#aebfb6','#7f988c'],['#c8b6bd','#9c7f8a']][i%4]; const g=x.createLinearGradient(X,Y,X+W,Y+H); g.addColorStop(0,c[0]); g.addColorStop(1,c[1]); x.fillStyle=g; x.fillRect(X,Y,W,H); }
+
+function render(v){
+  const W=PW+PAD*2, H=PAD+SHOTS*PH+(SHOTS-1)*GAP+FOOT;
+  const cv=document.createElement('canvas'); cv.width=W*DPR; cv.height=H*DPR;
+  const x=cv.getContext('2d'); x.scale(DPR,DPR);
+  x.fillStyle=v.bg; x.fillRect(0,0,W,H);
+  if(v.dot){ x.fillStyle=v.dot; for(let py=10;py<H;py+=22) for(let px=10+((py/22|0)%2?11:0);px<W;px+=22){ x.beginPath(); x.arc(px,py,1.6,0,7); x.fill(); } }
+  for(let i=0;i<SHOTS;i++) photo(x,PAD,PAD+i*(PH+GAP),PW,PH,i);
+  const baseY=PAD+SHOTS*PH+(SHOTS-1)*GAP;
+  const img=v.art();
+  if(img.complete && img.naturalWidth){ const mh=185, mw=mh*img.naturalWidth/img.naturalHeight; x.drawImage(img,(W-mw)/2,baseY-62,mw,mh); }
+  x.textAlign='center'; x.fillStyle=v.txt; x.globalAlpha=.55; x.font='400 12px Pretendard,sans-serif'; x.fillText(ls('2026.06.30',1), W/2, baseY+138); x.globalAlpha=1;
+  return cv;
+}
+
+function build(){
+  const row=document.getElementById('row'); row.innerHTML='';
+  VARIANTS.forEach(v=>{
+    const d=document.createElement('div'); d.className='item';
+    d.appendChild(render(v));
+    const c=document.createElement('div'); c.className='cap'; c.textContent=v.cap; d.appendChild(c);
+    const s=document.createElement('div'); s.className='desc'; s.textContent=v.desc; d.appendChild(s);
+    row.appendChild(d);
+  });
+}
+let n=0; [color,line].forEach(im=>im.onload=()=>{ if(++n>=2) build(); });
+build();
+</script>
+</body>
+</html>
