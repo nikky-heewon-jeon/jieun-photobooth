@@ -211,8 +211,10 @@ async function makeQR(){
     const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
     if(!res.ok) throw new Error(res.status);
     const url=(await res.json()).secure_url;
-    img.src=`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=${encodeURIComponent(url)}`;
-    img.style.display='block'; cap.textContent='QR을 스캔하면 사진이 열려요 (길게 눌러 저장)';
+    const base=location.href.replace(/[^/]*(\?.*)?$/,''); // 현재 폴더 URL
+    const page=base+'d.html?img='+encodeURIComponent(url);
+    img.src=`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=${encodeURIComponent(page)}`;
+    img.style.display='block'; cap.textContent='QR을 스캔하면 저장 페이지가 열려요';
   }catch(e){ cap.textContent='업로드 실패 · 아래 SAVE로 저장하세요'; }
 }
 

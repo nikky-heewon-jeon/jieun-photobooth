@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>知恩不死 · 사진 저장</title>
+<style>
+  :root{--bg:#fff; --fg:#000; --dim:#6b6b6b; --line:#000; --accent:#f4f4f2}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; min-height:100vh; background:var(--bg); color:var(--fg);
+    font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    display:flex; flex-direction:column; align-items:center; gap:18px; padding:28px 20px 40px;
+    padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+  .mark{font-size:34px; font-weight:800; letter-spacing:0}
+  .tag{font-size:13px; color:var(--dim); margin-top:6px; text-align:center}
+  header{text-align:center}
+  #photo{max-width:100%; max-height:64vh; border:1px solid var(--line); background:var(--accent); display:none}
+  .btn{width:100%; max-width:420px; padding:18px; border:none; border-radius:0; font-size:17px; font-weight:600;
+    font-family:inherit; cursor:pointer; letter-spacing:.02em}
+  .btn-go{background:var(--fg); color:#fff}
+  a.btn{text-align:center; text-decoration:none; display:block}
+  .btn:focus-visible{outline:none; box-shadow:0 0 0 3px rgba(0,0,0,.12)}
+  .hint{font-size:12px; color:var(--dim); text-align:center; line-height:1.7; max-width:420px}
+  .err{color:var(--dim); font-size:14px; text-align:center; line-height:1.7; padding:40px}
+</style>
+</head>
+<body>
+  <header><div class="mark">知恩不死</div><div class="tag">사진 다운로드</div></header>
+  <img id="photo" alt="촬영한 사진" />
+  <button class="btn btn-go" id="save" style="display:none">저장하기</button>
+  <div class="hint" id="hint" style="display:none">아이폰은 위 사진을 길게 눌러 '사진에 추가'로도 저장돼요.</div>
+  <div class="err" id="err" style="display:none">이미지 주소가 없어요. QR을 다시 스캔해 주세요.</div>
+<script>
+const img=new URLSearchParams(location.search).get('img');
+const $=id=>document.getElementById(id);
+if(!img){ $('err').style.display='block'; }
+else{
+  const photo=$('photo'), btn=$('save');
+  photo.src=img; photo.style.display='block'; btn.style.display='block'; $('hint').style.display='block';
+  const dl=img.replace('/upload/','/upload/fl_attachment/'); // Cloudinary 강제 다운로드 폴백
+  btn.onclick=async()=>{
+    const label=btn.textContent; btn.textContent='저장 중…';
+    try{
+      const r=await fetch(img); if(!r.ok) throw 0;
+      const b=await r.blob();
+      const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+      a.download='jieunbulsa-'+Date.now()+'.png'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(a.href); btn.textContent=label;
+    }catch(e){ location.href=dl; } // fetch 실패 시 attachment 링크로
+  };
+}
+</script>
+</body>
+</html>
