@@ -10,11 +10,13 @@
 <style>
   @font-face{ font-family:"MomsTypewriter"; src:url("assets/moms-typewriter.ttf") format("truetype"); font-display:swap; }
   :root{
-    --bg:#f7f4ee; --card:#fdfcf9; --fg:#1f1b18; --dim:#6f675e;
+    --bg:#f3f2ee; --card:#fbfaf7; --fg:#1f1b18; --dim:#6f675e;
     --line:#2b2b2b; --accent:#ececec; --primary:#9d111a;
     --r-xl:0px; --r-lg:0px; --r-md:0px; --r-sm:0px;
     --dur:200ms; --ease:cubic-bezier(0.22,1,0.36,1);
     --shadow:none;
+    /* 스페이싱 스케일 (4 기반) — 모든 gap·padding은 여기서만 */
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -25,16 +27,16 @@
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   .screen{min-height:100%; display:none; flex-direction:column; align-items:center;
-    justify-content:flex-start; gap:18px; padding:32px 24px 40px; overflow-y:auto}
+    justify-content:flex-start; gap:var(--s5); padding:var(--s6) var(--s5) var(--s6); overflow-y:auto}
   .screen.on{display:flex}
 
   header{text-align:center}
   .mark{font-size:40px; letter-spacing:0; font-weight:800; color:var(--fg)}
-  .brandmini{height:110px; width:auto; display:block; margin:0 auto 2px}
-  .tag{font-size:13px; color:var(--dim); margin-top:8px}
+  .brandmini{height:110px; width:auto; display:block; margin:0 auto}
+  .tag{font-size:13px; color:var(--dim); margin-top:var(--s2)}
 
   .panel{width:100%; max-width:560px; background:var(--card); border:1px solid var(--line);
-    border-radius:var(--r-xl); box-shadow:var(--shadow); padding:20px; display:flex; flex-direction:column}
+    border-radius:var(--r-xl); box-shadow:var(--shadow); padding:var(--s5); display:flex; flex-direction:column}
 
   .stage{position:relative; width:100%; aspect-ratio:3/2; border-radius:var(--r-lg); overflow:hidden;
     background:#000; border:1px solid var(--line)}
@@ -48,44 +50,46 @@
   .flash.on{animation:flash 340ms var(--ease)}
   @keyframes flash{0%{opacity:.95}100%{opacity:0}}
 
-  .lab{font-size:12px; letter-spacing:.02em; color:var(--dim); margin:22px 0 11px; font-weight:500}
-  .row{display:flex; gap:9px; flex-wrap:wrap}
+  .lab{font-size:12px; letter-spacing:.02em; color:var(--dim); margin:var(--s5) 0 var(--s3); font-weight:500}
+  .row{display:flex; gap:var(--s2); flex-wrap:wrap}
   .chip{flex:1 1 0; min-width:80px; background:var(--accent); border:1px solid var(--line); color:var(--dim);
-    border-radius:var(--r-md); padding:14px 8px; font-size:15px; cursor:pointer; text-align:center; font-weight:500;
+    border-radius:var(--r-md); padding:var(--s4) var(--s2); font-size:15px; cursor:pointer; text-align:center; font-weight:500;
     transition:color var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease)}
   .chip[aria-pressed="true"]{color:#fff; background:var(--primary); border-color:var(--primary)}
-  #frames{flex-direction:column; gap:8px}
-  #frames .chip{flex:0 0 auto; width:100%; text-align:left; padding:14px 15px; font-size:14px; line-height:1.4}
+  #frames{flex-direction:column; gap:var(--s2)}
+  #frames .chip{flex:0 0 auto; width:100%; text-align:left; padding:var(--s4); font-size:14px; line-height:1.4}
 
-  input[type=text]{width:100%; padding:15px; background:var(--card); border:1px solid var(--line);
-    color:var(--fg); border-radius:var(--r-sm); font-size:16px; font-family:inherit; margin-top:22px; text-align:center}
+  input[type=text]{width:100%; padding:var(--s4); background:var(--card); border:1px solid var(--line);
+    color:var(--fg); border-radius:var(--r-sm); font-size:16px; font-family:inherit; margin-top:var(--s5); text-align:center}
   input::placeholder{color:#9a9a93}
 
-  .btn{width:100%; max-width:560px; padding:18px; border:none; border-radius:var(--r-md); font-size:17px; font-weight:600;
+  .btn{width:100%; max-width:560px; padding:var(--s4); border:none; border-radius:var(--r-md); font-size:17px; font-weight:600;
     font-family:inherit; cursor:pointer; letter-spacing:.02em; transition:opacity var(--dur) var(--ease)}
   .btn-go{background:var(--primary); color:#fff}
-  .btn-go.full{margin-top:18px}
-  .btn-ghost{background:var(--card); color:var(--fg); border:1px solid var(--line); margin-top:10px}
+  .btn-go.full{margin-top:var(--s5)}
+  .btn-ghost{background:var(--card); color:var(--fg); border:1px solid var(--line); margin-top:var(--s3)}
   .btn:disabled{opacity:.45}
   .chip:focus-visible,.btn:focus-visible,input:focus-visible{outline:none; box-shadow:0 0 0 3px rgba(0,0,0,.12)}
 
-  .preview-wrap{display:flex; justify-content:center; margin-top:4px}
+  .preview-wrap{display:flex; justify-content:center; margin-top:var(--s1)}
   #preview{height:300px; max-width:100%; border:1px solid var(--line); background:var(--accent)}
 
-  .qrbox{display:flex; flex-direction:column; align-items:center; gap:8px; min-height:26px}
+  .qrbox{display:flex; flex-direction:column; align-items:center; gap:var(--s2); min-height:26px}
   #qrimg{display:none}
   #qrimg svg{width:190px; height:auto; display:block}
   .qrcap{font-size:13px; color:var(--dim); text-align:center}
 
-  .capwrap{display:flex; gap:28px; align-items:flex-start; justify-content:center; width:100%; max-width:920px; margin:0 auto}
-  .brand{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:22px; padding-top:4px}
+  /* 정렬 축: 좌 브랜드(고정 230) + 거터 + 콘텐츠(560) — 화면 전환 시 컬럼 x가 안 흔들리게 */
+  .capwrap{display:flex; gap:var(--s6); align-items:flex-start; justify-content:center; width:100%; max-width:822px; margin:0 auto}
+  .brand{flex:0 0 230px; display:flex; flex-direction:column; align-items:center; gap:var(--s5); padding-top:var(--s1)}
   .brand img{height:auto; width:auto; max-height:80vh; max-width:230px}
   .capmain{flex:1 1 auto; min-width:0; max-width:560px; display:flex; flex-direction:column}
   #resScreen .brand img{max-height:56vh}
   #resScreen .capmain{align-items:center}
   #resScreen .btn{max-width:340px}
   @media(max-width:700px){
-    .capwrap{flex-direction:column; align-items:center; gap:14px}
+    .capwrap{flex-direction:column; align-items:center; gap:var(--s4)}
+    .brand{flex:0 0 auto}
     .brand img{max-height:150px; max-width:120px}
   }
 
