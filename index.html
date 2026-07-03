@@ -50,6 +50,20 @@
   .flash.on{animation:flash 340ms var(--ease)}
   @keyframes flash{0%{opacity:.95}100%{opacity:0}}
 
+  /* ── 촬영 모드: 라이브뷰를 화면 가득 띄우고 3·2·1을 한복판에 크게 (자동 4컷을 놓치지 않게) ── */
+  body.shooting{overflow:hidden}
+  body.shooting::before{content:""; position:fixed; inset:0; background:var(--bg); z-index:55}
+  body.shooting .stage{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(96vw,127vh); aspect-ratio:3/2; z-index:60; border:none}
+  body.shooting .count{font-size:min(40vw,300px)}
+  body.shooting .progress{font-size:16px}
+  body.shooting .stack{display:flex}
+  /* 찍힌 컷이 라이브뷰 옆에 하나씩 쌓임 (촬영 중에만 표시) */
+  .stack{position:absolute; right:12px; top:12px; display:none; flex-direction:column; gap:8px; z-index:3; pointer-events:none}
+  .stack canvas{width:64px; height:auto; border:2px solid #fff; box-shadow:0 3px 14px rgba(0,0,0,.45);
+    opacity:0; transform:scale(.5); transition:opacity .3s var(--ease), transform .3s var(--ease)}
+  .stack canvas.in{opacity:1; transform:none}
+
   .lab{font-size:12px; letter-spacing:.02em; color:var(--dim); margin:var(--s5) 0 var(--s3); font-weight:500}
   .row{display:flex; gap:var(--s2); flex-wrap:wrap}
   .chip{flex:1 1 0; min-width:80px; background:var(--accent); border:1px solid var(--line); color:var(--dim);
@@ -121,6 +135,7 @@
           <div class="flash" id="flash"></div>
           <div class="progress" id="prog"></div>
           <div class="count" id="count" style="display:none"></div>
+          <div class="stack" id="stack"></div>
         </div>
         <div class="err" id="err" style="display:none"></div>
 
@@ -239,16 +254,25 @@ function updatePreview(){
 
 async function shoot(){
   busy=true;
-  $('shoot').disabled=true; shots=[]; prog.style.display='block';
+  document.body.classList.add('shooting'); // 라이브뷰 전체화면 진입
+  $('shoot').disabled=true; shots=[]; $('stack').innerHTML=''; prog.style.display='block';
   for(let i=0;i<SHOTS;i++){
     prog.textContent=`${i+1} / ${SHOTS}`; count.style.display='flex';
     for(let n=3;n>0;n--){ count.textContent=n; await wait(800); }
     count.textContent='●'; await wait(150);
     flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
-    shots.push(snap()); count.style.display='none'; await wait(550);
+    const s=snap(); shots.push(s); addThumb(s); // 찍힌 컷 옆에 쌓기
+    count.style.display='none'; await wait(550);
   }
-  prog.style.display='none'; $('shoot').disabled=false; busy=false;
+  prog.style.display='none'; document.body.classList.remove('shooting');
+  $('shoot').disabled=false; busy=false;
   compose(); show('resScreen'); makeQR();
+}
+function addThumb(src){
+  const w=64, t=document.createElement('canvas');
+  t.width=w*2; t.height=Math.round(w*2*src.height/src.width); t.style.width=w+'px';
+  t.getContext('2d').drawImage(src,0,0,t.width,t.height);
+  $('stack').appendChild(t); requestAnimationFrame(()=>t.classList.add('in'));
 }
 
 async function makeQR(){
