@@ -19,7 +19,7 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{height:100%}
   body{
-    margin:0; background-color:var(--bg); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27220%27%20height%3D%27220%27%3E%3Cfilter%20id%3D%27p%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.9%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27matrix%27%20values%3D%270%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.05%200.05%200.05%200%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23p%29%27%2F%3E%3C%2Fsvg%3E"); color:var(--fg);
+    margin:0; background-color:var(--bg); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Cfilter%20id%3D%27g%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.9%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27matrix%27%20values%3D%270%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.09%200.09%200.09%200%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23g%29%27%2F%3E%3C%2Fsvg%3E"),url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Cfilter%20id%3D%27f%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.016%200.5%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27matrix%27%20values%3D%270%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.06%200.06%200.06%200%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27%2F%3E%3C%2Fsvg%3E"); background-repeat:repeat,repeat; color:var(--fg);
     font-family:"MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif;
     -webkit-user-select:none; user-select:none;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
@@ -151,7 +151,7 @@ const FRAMES=[
   {id:'red',   name:"온 마음을 담아 '지은불사'를 외치고 싶다면", overlay:'frame1'},
   {id:'jieunL', name:'귀여운 지은불사 한 컷을 찍고 싶다면', bg:'#fff', txt:'#222', edition:true, art:'line'},
   {id:'psy',   name:'지은이의 유일한 옷, 이레즈미 셔츠가 탐난다면', overlay:'frame3'},
-  {id:'cyan',  name:"[초특급에디션] '다들힘내'를 거꾸로 말하면", overlay:'frame2', windows:[
+  {id:'cyan',  name:"[초특급에디션] '다들힘내'를 거꾸로 말하면", overlay:'frame2', capColor:'#111', windows:[
     {x:.0565,y:.0197,w:.8869,h:.2171},{x:.0565,y:.2511,w:.8869,h:.2171},
     {x:.0565,y:.4825,w:.8869,h:.2171},{x:.0565,y:.7138,w:.6161,h:.2182}]},
 ];
@@ -264,7 +264,7 @@ function stampCaption(x, W, H){
   x.textAlign='center'; x.textBaseline='alphabetic';
   x.shadowColor='rgba(0,0,0,.6)'; x.shadowBlur=Math.round(W*0.008);
   if('letterSpacing' in x) x.letterSpacing='-0.04em'; // 한글 자간 좁힘
-  x.fillStyle='#fff'; x.font=capF; x.fillText(cap, cx, H*0.958);
+  x.fillStyle=frame.capColor||'#fff'; x.font=capF; x.fillText(cap, cx, H*0.958);
   if('letterSpacing' in x) x.letterSpacing='0px';
   x.globalAlpha=.9; x.font=dateF; x.fillText(date, cx, H*0.984);
   x.restore();
