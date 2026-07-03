@@ -331,7 +331,7 @@ function composeOverlay(cv, list){
 
 function compose(cv=$('strip'), list=shots){
   if(frame.overlay) return composeOverlay(cv, list);
-  const foot=frame.edition?174:FOOT;
+  const foot=frame.edition?204:FOOT; // 날짜(baseY+169) 아래 하단 여백 확보
   const W=PW+PAD*2, H=PAD+SHOTS*PH+(SHOTS-1)*GAP+foot;
   cv.width=W*DPR; cv.height=H*DPR;
   const x=cv.getContext('2d'); x.scale(DPR,DPR);
