@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   @font-face{ font-family:"MomsTypewriter"; src:url("assets/moms-typewriter-v2.ttf") format("truetype"); font-display:swap; }
-  :root{--bg:#f9f9f9; --fg:#1f1b18; --dim:#6f675e; --line:#2b2b2b; --accent:#ececec; --primary:#9d111a}
+  :root{--bg:#fcfcfc; --fg:#1f1b18; --dim:#6f675e; --line:#2b2b2b; --accent:#ececec; --primary:#9d111a}
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   body{margin:0; min-height:100vh; background-color:var(--bg); background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Cfilter%20id%3D%27g%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.9%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27matrix%27%20values%3D%270%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.05%200.05%200.05%200%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23g%29%27%2F%3E%3C%2Fsvg%3E"),url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Cfilter%20id%3D%27f%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.016%200.5%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27matrix%27%20values%3D%270%200%200%200%200%200%200%200%200%200%200%200%200%200%200%200.035%200.035%200.035%200%200%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23f%29%27%2F%3E%3C%2Fsvg%3E"); background-repeat:repeat,repeat; color:var(--fg);
     font-family:"MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif;
@@ -40,7 +40,6 @@
     <div class="dmain">
       <img id="photo" alt="촬영한 사진" />
       <button class="btn btn-go" id="save" style="display:none">SAVE</button>
-      <div class="hint" id="hint" style="display:none">아이폰은 위 사진을 길게 눌러 '사진에 추가'로도 저장돼요.</div>
       <div class="err" id="err" style="display:none">이미지 주소가 없어요. QR을 다시 스캔해 주세요.</div>
     </div>
   </div>
@@ -50,7 +49,7 @@ const $=id=>document.getElementById(id);
 if(!img){ $('err').style.display='block'; }
 else{
   const photo=$('photo'), btn=$('save');
-  photo.src=img; photo.style.display='block'; btn.style.display='block'; $('hint').style.display='block';
+  photo.src=img; photo.style.display='block'; btn.style.display='block';
   const dl=img.replace('/upload/','/upload/fl_attachment/'); // Cloudinary 강제 다운로드 폴백
   btn.onclick=async()=>{
     const label=btn.textContent; btn.textContent='저장 중…';
