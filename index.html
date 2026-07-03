@@ -62,11 +62,12 @@
     width:min(96vw,127vh); aspect-ratio:3/2; z-index:60; border:none}
   body.shooting .count{font-size:min(40vw,300px)}
   body.shooting .progress{font-size:16px}
-  body.shooting .stack{display:flex}
-  /* 찍힌 컷이 라이브뷰 옆에 하나씩 쌓임 (촬영 중에만 표시) */
-  .stack{position:absolute; right:12px; top:12px; display:none; flex-direction:column; gap:8px; z-index:3; pointer-events:none}
-  .stack canvas{width:64px; height:auto; border:2px solid #fff; box-shadow:0 3px 14px rgba(0,0,0,.45);
-    opacity:0; transform:scale(.5); transition:opacity .3s var(--ease), transform .3s var(--ease)}
+  /* 찍힌 컷 미리보기: 촬영 중 화면 하단 빈 밴드에 가로로 쌓임(전체화면 라이브뷰에 안 가려지고 안 잘리게) */
+  .stack{display:none}
+  body.shooting .stack{display:flex; position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom));
+    transform:translateX(-50%); flex-direction:row; gap:10px; z-index:62; pointer-events:none} /* ponytail: 세로 키오스크 기준 하단 밴드 */
+  .stack canvas{width:78px; height:auto; border:2px solid #fff; box-shadow:0 4px 16px rgba(0,0,0,.4);
+    opacity:0; transform:translateY(14px); transition:opacity .3s var(--ease), transform .3s var(--ease)}
   .stack canvas.in{opacity:1; transform:none}
 
   .lab{font-size:13px; letter-spacing:.16em; color:var(--dim); margin:var(--s5) 0 var(--s3); font-weight:500}
@@ -140,7 +141,6 @@
           <div class="flash" id="flash"></div>
           <div class="progress" id="prog"></div>
           <div class="count" id="count" style="display:none"></div>
-          <div class="stack" id="stack"></div>
         </div>
         <div class="err" id="err" style="display:none"></div>
 
@@ -155,6 +155,7 @@
         <p class="lab">PREVIEW</p>
         <div class="preview-wrap"><canvas id="preview"></canvas></div>
       </div>
+      <div class="stack" id="stack"></div>
       <button class="btn btn-go full" id="shoot">START</button>
     </div>
   </div>
@@ -274,7 +275,7 @@ async function shoot(){
   compose(); show('resScreen'); makeQR();
 }
 function addThumb(src){
-  const w=64, t=document.createElement('canvas');
+  const w=78, t=document.createElement('canvas');
   t.width=w*2; t.height=Math.round(w*2*src.height/src.width); t.style.width=w+'px';
   t.getContext('2d').drawImage(src,0,0,t.width,t.height);
   $('stack').appendChild(t); requestAnimationFrame(()=>t.classList.add('in'));
