@@ -131,10 +131,13 @@ const FRAMES=[
   {id:'jieunL', name:'지은라인', bg:'#fff', txt:'#222', edition:true, art:'line'},
   {id:'red',   name:'레드자수', overlay:'frame1'},
   {id:'psy',   name:'네온마블', overlay:'frame3'},
+  {id:'cyan',  name:'시안콜라주', overlay:'frame2', windows:[
+    {x:.0565,y:.0197,w:.8869,h:.2171},{x:.0565,y:.2511,w:.8869,h:.2171},
+    {x:.0565,y:.4825,w:.8869,h:.2171},{x:.0565,y:.7138,w:.6161,h:.2182}]},
 ];
-// 오버레이 프레임(투명 4창 PNG) — 사진을 창에 깔고 위에 프레임을 덮음
-const OVERLAYS={frame1:new Image(), frame3:new Image()};
-OVERLAYS.frame1.src='assets/frame1.png'; OVERLAYS.frame3.src='assets/frame3.png';
+// 오버레이 프레임(투명 창 PNG) — 사진을 창에 깔고 위에 프레임을 덮음
+const OVERLAYS={frame1:new Image(), frame2:new Image(), frame3:new Image()};
+OVERLAYS.frame1.src='assets/frame1.png'; OVERLAYS.frame2.src='assets/frame2.png'; OVERLAYS.frame3.src='assets/frame3.png';
 const GRID=[{x:.0565,y:.0197,w:.8869,h:.2182},{x:.0565,y:.2511,w:.8869,h:.2182},
             {x:.0565,y:.4825,w:.8869,h:.2182},{x:.0565,y:.7138,w:.8869,h:.2182}];
 const mascot=new Image(); mascot.src='assets/jieun.png';
