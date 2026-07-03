@@ -53,6 +53,8 @@
     border-radius:var(--r-md); padding:14px 8px; font-size:15px; cursor:pointer; text-align:center; font-weight:500;
     transition:color var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease)}
   .chip[aria-pressed="true"]{color:#fff; background:var(--fg); border-color:var(--fg)}
+  #frames{flex-direction:column; gap:8px}
+  #frames .chip{flex:0 0 auto; width:100%; text-align:left; padding:14px 15px; font-size:14px; line-height:1.4}
 
   input[type=text]{width:100%; padding:15px; background:var(--card); border:1px solid var(--line);
     color:var(--fg); border-radius:var(--r-sm); font-size:16px; font-family:inherit; margin-top:22px; text-align:center}
@@ -128,10 +130,10 @@ const FILTERS=[
   {id:'haduri',   name:'하두리',   css:'brightness(1.35) contrast(0.8) saturate(1.12) blur(0.5px)', lo:0.42},
 ];
 const FRAMES=[
-  {id:'jieunL', name:'지은라인', bg:'#fff', txt:'#222', edition:true, art:'line'},
-  {id:'red',   name:'레드자수', overlay:'frame1'},
-  {id:'psy',   name:'네온마블', overlay:'frame3'},
-  {id:'cyan',  name:'시안콜라주', overlay:'frame2', windows:[
+  {id:'jieunL', name:'귀여운 한 컷을 찍고 싶다면', bg:'#fff', txt:'#222', edition:true, art:'line'},
+  {id:'red',   name:'온 마음을 담아 지은불사를 외치고 싶다면', overlay:'frame1'},
+  {id:'psy',   name:'지은이의 유일한 옷, 이레즈미 셔츠가 탐난다면', overlay:'frame3'},
+  {id:'cyan',  name:"[초특급에디션] '다들힘내'를 거꾸로 말하면", overlay:'frame2', windows:[
     {x:.0565,y:.0197,w:.8869,h:.2171},{x:.0565,y:.2511,w:.8869,h:.2171},
     {x:.0565,y:.4825,w:.8869,h:.2171},{x:.0565,y:.7138,w:.6161,h:.2182}]},
 ];
