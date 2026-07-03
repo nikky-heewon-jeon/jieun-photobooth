@@ -4,6 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>知恩不死</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#fff; --card:#fff; --fg:#000; --dim:#6b6b6b;
@@ -16,8 +19,7 @@
   html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--fg);
-    font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
-    font-feature-settings:"ss03","cv11";
+    font-family:"궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif;
     -webkit-user-select:none; user-select:none;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
@@ -235,8 +237,8 @@ function stampCaption(x, W, H){
   const cap=phrase||'知恩不死';
   const date=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.$/,'');
   const capS=letterSpace(cap,1), dateS=letterSpace(date,1);
-  const capF=`700 ${Math.round(W*0.030)}px Pretendard,sans-serif`;
-  const dateF=`400 ${Math.round(W*0.021)}px Pretendard,sans-serif`;
+  const capF=`700 ${Math.round(W*0.030)}px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif`;
+  const dateF=`400 ${Math.round(W*0.021)}px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif`;
   x.textAlign='center'; x.textBaseline='alphabetic';
   x.font=capF; const tw=x.measureText(capS).width;
   x.font=dateF; const dw=x.measureText(dateS).width;
@@ -276,21 +278,21 @@ function compose(cv=$('strip'), list=shots){
       x.drawImage(img, (W-mw)/2, baseY-62, mw, mh); // overlaps last photo by ~62px
     }
     const cap=phrase||'知恩不死';
-    x.font='700 17px Pretendard,sans-serif'; x.fillText(letterSpace(cap,1), W/2, baseY+142);
-    x.globalAlpha=.55; x.font='400 12px Pretendard,sans-serif'; x.fillText(letterSpace(date,1), W/2, baseY+163); x.globalAlpha=1;
+    x.font='700 17px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(cap,1), W/2, baseY+142);
+    x.globalAlpha=.55; x.font='400 12px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(date,1), W/2, baseY+163); x.globalAlpha=1;
   }else{
     const sz=Math.round(PH*0.98);
     for(let i=0;i<SHOTS;i++){
       const cy=PAD+i*(PH+GAP)+PH/2;
       x.save(); x.fillStyle=frame.char||'#fff'; x.textAlign='left'; x.textBaseline='middle';
       x.shadowColor='rgba(0,0,0,.35)'; x.shadowBlur=6;
-      x.font=`700 ${sz}px Pretendard,sans-serif`;
+      x.font=`700 ${sz}px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif`;
       x.fillText(CHARS[i]||'', PAD+2, cy);
       x.restore();
     }
     const cap=phrase||'知恩不死';
-    x.font='600 17px Pretendard,sans-serif'; x.fillText(letterSpace(cap,1), W/2, baseY+36);
-    x.globalAlpha=.6; x.font='400 12px Pretendard,sans-serif'; x.fillText(letterSpace(date,1), W/2, baseY+58); x.globalAlpha=1;
+    x.font='600 17px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(cap,1), W/2, baseY+36);
+    x.globalAlpha=.6; x.font='400 12px "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(date,1), W/2, baseY+58); x.globalAlpha=1;
   }
 }
 
@@ -299,6 +301,8 @@ function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.t
 $('shoot').onclick=shoot;
 $('retake').onclick=()=>show('capScreen');
 setInterval(()=>{ if($('capScreen').classList.contains('on')) updatePreview(); }, 450);
+// 웹폰트(궁서 대체) 로드되면 캔버스 다시 그림
+if(document.fonts){ document.fonts.ready.then(()=>{ if($('capScreen').classList.contains('on')) updatePreview(); }); }
 $('download').onclick=()=>{
   $('strip').toBlob(b=>{
     const a=document.createElement('a'); a.href=URL.createObjectURL(b);
