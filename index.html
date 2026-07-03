@@ -73,13 +73,17 @@
   #preview{height:300px; max-width:100%; border:1px solid var(--line); background:var(--accent)}
 
   .qrbox{display:flex; flex-direction:column; align-items:center; gap:8px; min-height:26px}
-  #qrimg{width:150px; height:150px; border:1px solid var(--line); background:#fff; display:none}
+  #qrimg{display:none}
+  #qrimg svg{width:190px; height:auto; display:block}
   .qrcap{font-size:13px; color:var(--dim); text-align:center}
 
   .capwrap{display:flex; gap:28px; align-items:flex-start; justify-content:center; width:100%; max-width:920px; margin:0 auto}
-  .brand{flex:0 0 auto; display:flex; justify-content:center; padding-top:4px}
+  .brand{flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:22px; padding-top:4px}
   .brand img{height:auto; width:auto; max-height:80vh; max-width:230px}
   .capmain{flex:1 1 auto; min-width:0; max-width:560px; display:flex; flex-direction:column}
+  #resScreen .brand img{max-height:56vh}
+  #resScreen .capmain{align-items:center}
+  #resScreen .btn{max-width:340px}
   @media(max-width:700px){
     .capwrap{flex-direction:column; align-items:center; gap:14px}
     .brand img{max-height:150px; max-width:120px}
@@ -124,16 +128,19 @@
 
 <section class="screen" id="resScreen">
   <div class="capwrap">
-    <aside class="brand"><img src="assets/hanja.png" alt="知恩不死" /></aside>
+    <aside class="brand">
+      <img src="assets/hanja.png" alt="知恩不死" />
+      <div class="qrbox" id="qrbox"><div id="qrimg"></div><div class="qrcap" id="qrcap"></div></div>
+    </aside>
     <div class="capmain">
       <div class="result-body"><canvas id="strip"></canvas></div>
-      <div class="qrbox" id="qrbox"><img id="qrimg" alt="다운로드 QR"><div class="qrcap" id="qrcap"></div></div>
       <button class="btn btn-go full" id="download">SAVE</button>
       <button class="btn btn-ghost" id="retake">다시 찍기</button>
     </div>
   </div>
 </section>
 
+<script src="assets/qrcode.js"></script>
 <script>
 // ── QR 다운로드 설정 (Cloudinary 무료, 무서명 업로드) ──────────────
 // 1) cloudinary.com 가입 → Dashboard의 "Cloud name" 복사
@@ -243,7 +250,8 @@ async function makeQR(){
     const url=(await res.json()).secure_url;
     const base=location.href.replace(/[^/]*(\?.*)?$/,''); // 현재 폴더 URL
     const page=base+'d.html?img='+encodeURIComponent(url);
-    img.src=`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=${encodeURIComponent(page)}`;
+    const q=qrcode(0,'M'); q.addData(page); q.make();
+    img.innerHTML=q.createSvgTag({cellSize:8, margin:32, scalable:true}).replace('fill="white"','fill="none"'); // 배경 투명
     img.style.display='block'; cap.textContent='QR을 스캔하면 저장 페이지가 열려요';
   }catch(e){ cap.textContent='업로드 실패 · 아래 SAVE로 저장하세요'; }
 }
