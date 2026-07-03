@@ -231,6 +231,20 @@ function coverDraw(ctx,src,dx,dy,dw,dh){
   const s=Math.max(dw/src.width,dh/src.height), cw=dw/s, ch=dh/s;
   ctx.drawImage(src,(src.width-cw)/2,(src.height-ch)/2,cw,ch, dx,dy,dw,dh);
 }
+function stampCaption(x, W, H){
+  const cap=phrase||'知恩不死';
+  const date=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.$/,'');
+  const capS=letterSpace(cap,1), dateS=letterSpace(date,1);
+  const capF=`700 ${Math.round(W*0.030)}px Pretendard,sans-serif`;
+  const dateF=`400 ${Math.round(W*0.021)}px Pretendard,sans-serif`;
+  x.textAlign='center'; x.textBaseline='alphabetic';
+  x.font=capF; const tw=x.measureText(capS).width;
+  x.font=dateF; const dw=x.measureText(dateS).width;
+  const pw=Math.max(tw,dw)+W*0.06, cx=W/2;
+  x.fillStyle='rgba(0,0,0,.5)'; x.fillRect(cx-pw/2, H*0.935, pw, H*0.058);
+  x.fillStyle='#fff'; x.font=capF; x.fillText(capS, cx, H*0.958);
+  x.globalAlpha=.85; x.font=dateF; x.fillText(dateS, cx, H*0.984); x.globalAlpha=1;
+}
 function composeOverlay(cv, list){
   const ov=OVERLAYS[frame.overlay];
   if(!ov.complete||!ov.naturalWidth){ cv.width=2; cv.height=5; return; } // 아직 로딩 중
@@ -240,6 +254,7 @@ function composeOverlay(cv, list){
   x.fillStyle='#000'; x.fillRect(0,0,W,H);
   (frame.windows||GRID).forEach((r,i)=>{ const s=list[i]; if(s) coverDraw(x,s,r.x*W,r.y*H,r.w*W,r.h*H); });
   x.drawImage(ov,0,0,W,H);
+  stampCaption(x, W, H);
 }
 
 function compose(cv=$('strip'), list=shots){
