@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   @font-face{ font-family:"MomsTypewriter"; src:url("assets/moms-typewriter-v2.ttf") format("truetype"); font-display:swap; }
+  @font-face{ font-family:"YoonChild"; src:url("assets/yoon-child.ttf") format("truetype"); font-display:swap; }
   :root{
     --bg:#fefefe; --card:#ffffff; --fg:#1f1b18; --dim:#6f675e;
     --line:#2b2b2b; --accent:#ececec; --primary:#9d111a;
@@ -303,16 +304,17 @@ function coverDraw(ctx,src,dx,dy,dw,dh){
 function stampCaption(x, W, H){
   const cap=phrase||'知恩不死';
   const date=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\.$/,'');
-  const capF=`700 ${Math.round(W*0.030)}px "MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif`;
-  const dateF=`400 ${Math.round(W*0.021)}px "MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif`;
+  const fam='"YoonChild", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif';
+  const capSize=Math.round(W*0.041), dateSize=Math.round(W*0.028); // 키움
+  const dateY=Math.round(H*0.976), capY=Math.round(dateY - capSize*0.98); // 줄간격 좁힘(폰트크기 연동)
   const cx=W/2;
   x.save();
   x.textAlign='center'; x.textBaseline='alphabetic';
   x.shadowColor='rgba(0,0,0,.6)'; x.shadowBlur=Math.round(W*0.008);
-  if('letterSpacing' in x) x.letterSpacing='-0.04em'; // 한글 자간 좁힘
-  x.fillStyle=frame.capColor||'#fff'; x.font=capF; x.fillText(cap, cx, H*0.958);
+  if('letterSpacing' in x) x.letterSpacing='-0.03em'; // 한글 자간 좁힘
+  x.fillStyle=frame.capColor||'#fff'; x.font=`700 ${capSize}px ${fam}`; x.fillText(cap, cx, capY);
   if('letterSpacing' in x) x.letterSpacing='0px';
-  x.globalAlpha=.9; x.font=dateF; x.fillText(date, cx, H*0.984);
+  x.globalAlpha=.9; x.font=`400 ${dateSize}px ${fam}`; x.fillText(date, cx, dateY);
   x.restore();
 }
 function composeOverlay(cv, list){
@@ -346,8 +348,8 @@ function compose(cv=$('strip'), list=shots){
       x.drawImage(img, (W-mw)/2, baseY-62, mw, mh); // overlaps last photo by ~62px
     }
     const cap=phrase||'知恩不死';
-    x.font='700 17px "MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(cap,1), W/2, baseY+142);
-    x.globalAlpha=.55; x.font='400 12px "MomsTypewriter", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(letterSpace(date,1), W/2, baseY+163); x.globalAlpha=1;
+    x.font='700 23px "YoonChild", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(cap, W/2, baseY+150);
+    x.globalAlpha=.55; x.font='400 15px "YoonChild", "궁서", Gungsuh, GungsuhChe, "Nanum Myeongjo", serif'; x.fillText(date, W/2, baseY+169); x.globalAlpha=1;
   }else{
     const sz=Math.round(PH*0.98);
     for(let i=0;i<SHOTS;i++){
@@ -370,7 +372,7 @@ $('shoot').onclick=shoot;
 $('retake').onclick=()=>show('capScreen');
 setInterval(()=>{ if($('capScreen').classList.contains('on')) updatePreview(); }, 450);
 // 웹폰트(궁서 대체) 로드되면 캔버스 다시 그림
-if(document.fonts){ document.fonts.load('16px "MomsTypewriter"'); document.fonts.ready.then(()=>{ if($('capScreen').classList.contains('on')) updatePreview(); }); }
+if(document.fonts){ document.fonts.load('16px "MomsTypewriter"'); document.fonts.load('16px "YoonChild"'); document.fonts.ready.then(()=>{ if($('capScreen').classList.contains('on')) updatePreview(); }); }
 $('download').onclick=()=>{
   $('strip').toBlob(b=>{
     const a=document.createElement('a'); a.href=URL.createObjectURL(b);
