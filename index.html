@@ -129,7 +129,14 @@ const FRAMES=[
   {id:'black', name:'블랙',   bg:'#101010', txt:'#f4f4f4', char:'#000'},
   {id:'jieun',  name:'지은불사', bg:'#563c29', txt:'#f1ead9', dot:'rgba(241,234,217,.10)', edition:true, art:'color'},
   {id:'jieunL', name:'지은라인', bg:'#fff', txt:'#222', edition:true, art:'line'},
+  {id:'red',   name:'레드자수', overlay:'frame1'},
+  {id:'psy',   name:'네온마블', overlay:'frame3'},
 ];
+// 오버레이 프레임(투명 4창 PNG) — 사진을 창에 깔고 위에 프레임을 덮음
+const OVERLAYS={frame1:new Image(), frame3:new Image()};
+OVERLAYS.frame1.src='assets/frame1.png'; OVERLAYS.frame3.src='assets/frame3.png';
+const GRID=[{x:.0565,y:.0197,w:.8869,h:.2182},{x:.0565,y:.2511,w:.8869,h:.2182},
+            {x:.0565,y:.4825,w:.8869,h:.2182},{x:.0565,y:.7138,w:.8869,h:.2182}];
 const mascot=new Image(); mascot.src='assets/jieun.png';
 const mascotLine=new Image(); mascotLine.src='assets/jieun_line.png';
 const PHRASES=['지은아 사랑해','지은아 힘내','지은이 최고야'];
@@ -220,7 +227,23 @@ async function makeQR(){
 
 function letterSpace(s,n){ return s.split('').join(' '.repeat(n)); }
 
+function coverDraw(ctx,src,dx,dy,dw,dh){
+  const s=Math.max(dw/src.width,dh/src.height), cw=dw/s, ch=dh/s;
+  ctx.drawImage(src,(src.width-cw)/2,(src.height-ch)/2,cw,ch, dx,dy,dw,dh);
+}
+function composeOverlay(cv, list){
+  const ov=OVERLAYS[frame.overlay];
+  if(!ov.complete||!ov.naturalWidth){ cv.width=2; cv.height=5; return; } // 아직 로딩 중
+  const W=ov.naturalWidth, H=ov.naturalHeight;
+  cv.width=W; cv.height=H;
+  const x=cv.getContext('2d'); x.imageSmoothingQuality='high';
+  x.fillStyle='#000'; x.fillRect(0,0,W,H);
+  (frame.windows||GRID).forEach((r,i)=>{ const s=list[i]; if(s) coverDraw(x,s,r.x*W,r.y*H,r.w*W,r.h*H); });
+  x.drawImage(ov,0,0,W,H);
+}
+
 function compose(cv=$('strip'), list=shots){
+  if(frame.overlay) return composeOverlay(cv, list);
   const foot=frame.edition?174:FOOT;
   const W=PW+PAD*2, H=PAD+SHOTS*PH+(SHOTS-1)*GAP+foot;
   cv.width=W*DPR; cv.height=H*DPR;
