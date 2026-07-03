@@ -11,7 +11,7 @@
   @font-face{ font-family:"MomsTypewriter"; src:url("assets/moms-typewriter.ttf") format("truetype"); font-display:swap; }
   :root{
     --bg:#f7f4ee; --card:#fdfcf9; --fg:#1f1b18; --dim:#6f675e;
-    --line:#2b2b2b; --accent:#efe9df; --primary:#9d111a;
+    --line:#2b2b2b; --accent:#ececec; --primary:#9d111a;
     --r-xl:0px; --r-lg:0px; --r-md:0px; --r-sm:0px;
     --dur:200ms; --ease:cubic-bezier(0.22,1,0.36,1);
     --shadow:none;
@@ -123,11 +123,15 @@
 </section>
 
 <section class="screen" id="resScreen">
-  <header><img class="brandmini" src="assets/hanja.png" alt="知恩不死" /><div class="tag">사진을 저장하세요</div></header>
-  <div class="result-body"><canvas id="strip"></canvas></div>
-  <div class="qrbox" id="qrbox"><img id="qrimg" alt="다운로드 QR"><div class="qrcap" id="qrcap"></div></div>
-  <button class="btn btn-go full" id="download">SAVE · PNG 저장</button>
-  <button class="btn btn-ghost" id="retake">다시 찍기</button>
+  <div class="capwrap">
+    <aside class="brand"><img src="assets/hanja.png" alt="知恩不死" /></aside>
+    <div class="capmain">
+      <div class="result-body"><canvas id="strip"></canvas></div>
+      <div class="qrbox" id="qrbox"><img id="qrimg" alt="다운로드 QR"><div class="qrcap" id="qrcap"></div></div>
+      <button class="btn btn-go full" id="download">SAVE</button>
+      <button class="btn btn-ghost" id="retake">다시 찍기</button>
+    </div>
+  </div>
 </section>
 
 <script>
