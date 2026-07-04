@@ -262,17 +262,20 @@ async function shoot(){
   busy=true;
   document.body.classList.add('shooting'); // 라이브뷰 전체화면 진입
   $('shoot').disabled=true; shots=[]; $('stack').innerHTML=''; prog.style.display='block';
+  let pending=null;
   for(let i=0;i<SHOTS;i++){
     prog.textContent=`${i+1} / ${SHOTS}`; count.style.display='flex';
     for(let n=3;n>0;n--){ count.textContent=n; await wait(800); }
     count.textContent='●'; await wait(150);
     flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
     const s=snap(); shots.push(s); addThumb(s); // 찍힌 컷 옆에 쌓기
-    count.style.display='none'; await wait(550);
+    count.style.display='none';
+    if(i===SHOTS-1){ compose(); pending=(CLOUD_NAME&&UPLOAD_PRESET)?startUpload():null; } // 마지막 컷 찍자마자 업로드 시작(대기·전환과 겹침)
+    await wait(550);
   }
   prog.style.display='none'; document.body.classList.remove('shooting');
   $('shoot').disabled=false; busy=false;
-  compose(); show('resScreen'); makeQR();
+  show('resScreen'); makeQR(pending);
 }
 function addThumb(src){
   const w=78, t=document.createElement('canvas');
@@ -285,17 +288,20 @@ function flattenStrip(){ // 투명(찢긴 가장자리)을 배경색으로 채�
   const s=$('strip'), c=document.createElement('canvas'); c.width=s.width; c.height=s.height;
   const x=c.getContext('2d'); x.fillStyle='#fefefe'; x.fillRect(0,0,c.width,c.height); x.drawImage(s,0,0); return c;
 }
-async function makeQR(){
+function startUpload(){ // 스트립을 JPEG로 인코딩 후 Cloudinary 업로드 → secure_url 반환(진행 중 Promise)
+  return new Promise(r=>flattenStrip().toBlob(r,'image/jpeg',0.9))
+    .then(blob=>{ const fd=new FormData(); fd.append('file',blob); fd.append('upload_preset',UPLOAD_PRESET);
+      return fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd}); })
+    .then(res=>{ if(!res.ok) throw new Error(res.status); return res.json(); })
+    .then(j=>j.secure_url);
+}
+async function makeQR(pending){
   const img=$('qrimg'), cap=$('qrcap');
   img.style.display='none';
   if(!CLOUD_NAME || !UPLOAD_PRESET){ cap.textContent='QR: Cloudinary 설정 후 사용 가능 (SAVE는 지금도 됨)'; return; }
   cap.textContent='업로드 중…';
   try{
-    const blob=await new Promise(r=>flattenStrip().toBlob(r,'image/jpeg',0.9)); // JPEG 업로드: 용량↓ → 인코딩·업로드 빠름
-    const fd=new FormData(); fd.append('file',blob); fd.append('upload_preset',UPLOAD_PRESET);
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-    if(!res.ok) throw new Error(res.status);
-    const url=(await res.json()).secure_url;
+    const url=await (pending||startUpload()); // 촬영 중 미리 시작한 업로드가 있으면 그걸 기다림
     const base=location.href.replace(/[^/]*(\?.*)?$/,''); // 현재 폴더 URL
     const page=base+'d.html?img='+encodeURIComponent(url);
     const q=qrcode(0,'M'); q.addData(page); q.make();
