@@ -281,13 +281,17 @@ function addThumb(src){
   $('stack').appendChild(t); requestAnimationFrame(()=>t.classList.add('in'));
 }
 
+function flattenStrip(){ // 투명(찢긴 가장자리)을 배경색으로 채워 JPEG 인코딩용 캔버스 생성
+  const s=$('strip'), c=document.createElement('canvas'); c.width=s.width; c.height=s.height;
+  const x=c.getContext('2d'); x.fillStyle='#fefefe'; x.fillRect(0,0,c.width,c.height); x.drawImage(s,0,0); return c;
+}
 async function makeQR(){
   const img=$('qrimg'), cap=$('qrcap');
   img.style.display='none';
   if(!CLOUD_NAME || !UPLOAD_PRESET){ cap.textContent='QR: Cloudinary 설정 후 사용 가능 (SAVE는 지금도 됨)'; return; }
   cap.textContent='업로드 중…';
   try{
-    const blob=await new Promise(r=>$('strip').toBlob(r,'image/png'));
+    const blob=await new Promise(r=>flattenStrip().toBlob(r,'image/jpeg',0.9)); // JPEG 업로드: 용량↓ → 인코딩·업로드 빠름
     const fd=new FormData(); fd.append('file',blob); fd.append('upload_preset',UPLOAD_PRESET);
     const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
     if(!res.ok) throw new Error(res.status);

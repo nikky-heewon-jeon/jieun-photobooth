@@ -57,7 +57,7 @@ else{
       const r=await fetch(img); if(!r.ok) throw 0;
       const b=await r.blob();
       const a=document.createElement('a'); a.href=URL.createObjectURL(b);
-      a.download='jieunbulsa-'+Date.now()+'.png'; document.body.appendChild(a); a.click(); a.remove();
+      a.download='jieunbulsa-'+Date.now()+'.jpg'; document.body.appendChild(a); a.click(); a.remove();
       URL.revokeObjectURL(a.href); btn.textContent=label;
     }catch(e){ location.href=dl; } // fetch 실패 시 attachment 링크로
   };
